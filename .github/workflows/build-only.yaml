@@ -1,6 +1,6 @@
 name: Build Only
 
-run-name: ${{ github.actor }} is learning GitHub Actions
+run-name: "Deploy to @${{ github.env}}: ${{ inputs.deploy_target }} by @${{ github.actor }}"
 
 on:  
   push:
