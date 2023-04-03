@@ -1,6 +1,6 @@
 name: Build Only
 
-run-name: "Deploy to @${{ github.ref_name }}: @${{ inputs.deploy_target }} by @${{ github.actor }}"
+run-name: "Deploy to @${{ github.ref_name }} by @${{ github.actor }}"
 
 on:  
   push:
