@@ -2,28 +2,22 @@ name: Build Only
 
 run-name: "Deploy to @${{ github.ref_name }} by @${{ github.actor }}"
 
-on: 
-  workflow_dispatch:
-    inputs:
-      build_deploy_choice:
-          description: 'Build, Deploy or Both'
-          required: true
-          default: 'build_deploy' 
-          type: choice
-          options:
-          - build_only
-          - deploy_only
-          - build_deploy
-      environment:
-        type: environment
-        description: Select the environment
-
+on:  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'src/Ajax/**/*'
+      - '.github/workflows/main_build-ajax.yml'
 jobs:  
   build:    
     runs-on: windows-latest
     
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+            fetch-depth: 0
       
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
@@ -35,8 +29,11 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Restore Packages
-        run: nuget restore NetGitHubActions-POC.sln
+        run: nuget restore NetGitHubActions-POC.sln -ConfigFile src\NuGet.Config
+        env:
+            TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
+            TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
 
-      - name: Build Solution
+      - name: Build AJAX Solution
         run: |
           msbuild.exe NetGitHubActions-POC.sln /p:platform="Any CPU" /p:configuration="Release"

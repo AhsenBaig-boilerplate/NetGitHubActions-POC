@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NetGitHubActions-POC")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Net GitHub Actions Proof of concept")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("AhsenBaig")]
 [assembly: AssemblyProduct("NetGitHubActions-POC")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
