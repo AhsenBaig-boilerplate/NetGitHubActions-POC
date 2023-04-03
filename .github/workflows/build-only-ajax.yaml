@@ -1,4 +1,4 @@
-name: Build Only
+name: Build Only AJAX
 
 run-name: "Deploy to @${{ github.ref_name }} by @${{ github.actor }}"
 
