@@ -8,7 +8,7 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - 'src/Ajax/**/*'
+      - 'Ajax/**/*'
       - '.github/workflows/main_build-ajax.yml'
 jobs:  
   build:    
@@ -29,7 +29,7 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Restore Packages
-        run: nuget restore NetGitHubActions-POC.sln -ConfigFile src\NuGet.Config
+        run: nuget restore NetGitHubActions-POC.sln -ConfigFile NuGet.Config
         env:
             TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
             TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
