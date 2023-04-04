@@ -33,6 +33,8 @@ jobs:
         env:
             TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
             TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
+            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
 
       - name: Build AJAX Solution
         run: |
@@ -48,7 +50,7 @@ jobs:
           dotnet nuget push "bin/Release/NetGitHubActions.1.0.0.nupkg"  --api-key ${{ secrets.NUGET_API_KEY }} --source "AhsenBaig-boilerplate-GitHubPackages"
           #nuget push *.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}          
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
       # Publish each built artifact to GitHub Packages
       #- name: Publish to GitHub Packages
       #  uses: actions/upload-artifact@v2
