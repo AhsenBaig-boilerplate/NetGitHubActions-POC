@@ -35,6 +35,11 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -PackagesDirectory packages
         # nuget restore ${{ env.PROJECT_NAME }}.sln -ConfigFile NuGet.Config
+        env:
+            TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
+            TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
+            NUGET_USER: ${{ github.actor }}
+            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
       - name: Build the solution
         run: msbuild ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj /p:Configuration=Release
