@@ -13,7 +13,10 @@ on:
 jobs:  
   build:    
     runs-on: windows-latest
-    
+
+    env:
+      PROJECT_NAME: NetGitHubActions-POC
+
     steps:
       - uses: actions/checkout@v3
         with:
@@ -29,7 +32,7 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Restore Packages
-        run: nuget restore NetGitHubActions-POC.sln -ConfigFile NuGet.Config
+        run: nuget restore ${{ env.PROJECT_NAME }}.sln -ConfigFile NuGet.Config
         env:
             TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
             TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
@@ -39,8 +42,10 @@ jobs:
 
       - name: Build AJAX Solution
         run: |
-          msbuild.exe NetGitHubActions-POC.sln /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=any
-          nuget pack ./NetGitHubActions-POC.csproj -Prop Configuration=Release
+          msbuild.exe ${{ env.PROJECT_NAME }}.sln /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=any
+      - name: Create NuGet package
+        run: nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release
+          #nuget pack ./${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release
           #dotnet pack NetGitHubActions-POC\NetGitHubActions-POC.csproj --configuration=Release # Doesn't work with .net Framework
           #msbuild.exe NetGitHubActions-POC.sln /p:platform="Any CPU" /p:configuration="Release"
       - name: Publish NuGet package
