@@ -28,7 +28,7 @@ jobs:
           dotnet-version: 4.8.x
 
       - name: Publish NuGet package      
-        uses: nuget/nuget-set-apikey@v1
+        uses: nuget/setup-nuget@v1
         with:
           api-key: ${{ secrets.NUGET_API_KEY }}
       
