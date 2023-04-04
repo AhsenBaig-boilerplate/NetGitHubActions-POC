@@ -30,7 +30,7 @@ jobs:
       - name: Publish NuGet package      
         uses: nuget/setup-nuget@v1
         with:
-          api-NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
       
       - name: Restore NuGet packages
         run: nuget restore ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -PackagesDirectory packages
