@@ -33,6 +33,7 @@ jobs:
         env:
             TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
             TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
+            NUGET_USER: ${{ github.actor }}
             NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
 
