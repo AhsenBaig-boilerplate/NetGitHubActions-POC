@@ -11,7 +11,7 @@ on:
       - 'Ajax/**/*'
       - '.github/workflows/main_build-ajax.yml'
 jobs:  
-  build:    
+  build-and-publish:    
     runs-on: windows-latest
 
     env:
@@ -21,54 +21,42 @@ jobs:
       - uses: actions/checkout@v3
         with:
             fetch-depth: 0
+
+      - name: Setup .NET Framework
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 4.8.x
+
+      - name: Publish NuGet package      
+        uses: nuget/nuget-set-apikey@v1
+        with:
+          api-key: ${{ secrets.NUGET_API_KEY }}
       
-      - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
+      - name: Restore NuGet packages
+        run: nuget restore ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -PackagesDirectory packages
+        # nuget restore ${{ env.PROJECT_NAME }}.sln -ConfigFile NuGet.Config
 
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1
-        
-      - name: Navigate to Workspace
-        run: cd $GITHUB_WORKSPACE
-
-      - name: Restore Packages
-        run: nuget restore ${{ env.PROJECT_NAME }}.sln -ConfigFile NuGet.Config
+      - name: Build the solution
+        run: msbuild ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj /p:Configuration=Release
         env:
-            TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
-            TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
-            NUGET_USER: ${{ github.actor }}
-            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          PROJECT_DIR: ${{ env.PROJECT_NAME }}
+          BUILD_CONFIG: Release
 
-
-      - name: Build AJAX Solution
+      - name: Show build output
+        if: always()
         run: |
-          msbuild.exe ${{ env.PROJECT_NAME }}.sln /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=any
+          ls -R ${{ env.PROJECT_DIR }}
+          echo "BUILD_CONFIG=${{ env.BUILD_CONFIG }}"
+          echo "PROJECT_DIR=${{ env.PROJECT_DIR }}"
+          echo "PROJECT_FILE=${{ env.PROJECT_DIR }}/${{ env.PROJECT_DIR }}.csproj"
+          echo "BUILD_ARTIFACTS=${{ env.PROJECT_DIR }}/bin/${{ env.BUILD_CONFIG }}"
+
       - name: Create NuGet package
         run: nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release
-          #nuget pack ./${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release
-          #dotnet pack NetGitHubActions-POC\NetGitHubActions-POC.csproj --configuration=Release # Doesn't work with .net Framework
-          #msbuild.exe NetGitHubActions-POC.sln /p:platform="Any CPU" /p:configuration="Release"
-      - name: Publish NuGet package
-        run: | 
-          nuget source Add -Name "AhsenBaig-boilerplate-GitHubPackages" -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -UserName ${{ github.actor }} -Password ${{ secrets.NUGET_API_KEY }}
-          nuget setapikey ${{ secrets.NUGET_API_KEY }} -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-          # nuget push "bin/Release/OctocatApp.1.0.0.nupkg" -Source "AhsenBaig-boilerplate-GitHubPackages"
-          dotnet nuget push "bin/Release/NetGitHubActions.1.0.0.nupkg"  --api-key ${{ secrets.NUGET_API_KEY }} --source "AhsenBaig-boilerplate-GitHubPackages"
-          #nuget push *.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      # Publish each built artifact to GitHub Packages
-      #- name: Publish to GitHub Packages
-      #  uses: actions/upload-artifact@v2
-      #  with: 
-      #      # Name the artifact based on the project name and configuration
-      #      name: NetGitHubActions-POC-Release
-      #      # Set the output path to the built DLL file for the project
-      #      path: /NetGitHubActions-POC/bin/Release/NetGitHubActions-POC.dll
-            
-      ## Include the PDB file in the package
-      #  if: success()
-      #  continue-on-error: true
-      #  with:
-      #       name: NetGitHubActions-POC-Release-Symbols
-      #       path: /MyLibrary1/bin/Release/NetGitHubActions-POC.pdb
+          BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release      
+      
+      - name: Publish NuGet packag
+        run: nuget push ${{ env.PROJECT_NAME }}.*.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        env:
+            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
