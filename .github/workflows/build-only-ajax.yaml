@@ -1,15 +1,26 @@
-name: Build Only
+name: Build AJAX Application
 
 run-name: "Deploy to @${{ github.ref_name }} by @${{ github.actor }}"
 
-on:  
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on: 
+  workflow_dispatch:
+    inputs:
+      build_deploy_choice:
+          description: 'Build, Deploy or Both'
+          required: true
+          default: 'build_deploy' 
+          type: choice
+          options:
+          - build_only
+          - deploy_only
+          - build_deploy
+      environment:
+        type: environment
+        description: Select the environment
     paths:
-      - 'src/Ajax/**/*'
+      - 'Ajax/**/*'
       - '.github/workflows/main_build-ajax.yml'
+
 jobs:  
   build:    
     runs-on: windows-latest
@@ -29,11 +40,12 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Restore Packages
-        run: nuget restore NetGitHubActions-POC.sln -ConfigFile src\NuGet.Config
+        run: nuget restore NetGitHubActions-POC.sln -ConfigFile NuGet.Config
         env:
             TELERIK_USERNAME: ${{ secrets.MyTelerikAccountUsername }} 
             TELERIK_PASSWORD: ${{ secrets.MyTelerikAccountPassword }}
 
       - name: Build AJAX Solution
         run: |
-          msbuild.exe NetGitHubActions-POC.sln /p:platform="Any CPU" /p:configuration="Release"
+          msbuild.exe NetGitHubActions-POC.sln /t:Restore /p:Configuration=Release /p:RuntimeIdentifier=any
+          #msbuild.exe NetGitHubActions-POC.sln /p:platform="Any CPU" /p:configuration="Release"
