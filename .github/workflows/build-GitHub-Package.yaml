@@ -62,13 +62,21 @@ jobs:
       - name: Create NuGet package
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}
-            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"            
+            "nupkg" | Out-File -FilePath $env:GITHUB_ENV -Append
         env:
           BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
+
+      - name: Upload NuGet package
+        if: github.event_name == 'release' && startsWith(github.ref, 'v')
+        uses: actions/upload-release-asset@v1
+        with:
+          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+          asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+          release_id: ${{ github.event.release.id }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish NuGet package
         if: github.event_name == 'release' && startsWith(github.ref, 'v')
         run: nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
             NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-
