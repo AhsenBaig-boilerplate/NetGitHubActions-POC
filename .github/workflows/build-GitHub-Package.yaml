@@ -23,6 +23,27 @@ jobs:
             echo "VERSION1=${TAG#v}" >> $GITHUB_ENV
             echo "VERSION1=${TAG#v}" >> $GITHUB_OUTPUT
 
+      - name: Check Tag
+        id: check-tag
+        run: |
+          if [[ ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "match=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Build
+        if: steps.check-tag.outputs.match == 'true'
+        run: |
+          echo "Tag is a match"
+
+      - name: Set the value
+        id: step_one
+        run: |
+          echo "action_state=yellow" >> $GITHUB_ENV
+      - name: Use the value
+        id: step_two
+        run: |
+          echo "${{ env.action_state }}" # This will output 'yellow'
+          echo "${{ env.VERSION1 }}" # VERSION1          
+
       - name: Create annotation for build error
         run: echo "::error file=app.js,line=1::Missing semicolon"
 
