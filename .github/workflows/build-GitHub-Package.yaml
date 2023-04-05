@@ -56,16 +56,15 @@ jobs:
         if: steps.check-tag.outputs.match == 'true'
         run: |
           echo "Tag is a match"
-
+      
       - name: Set the value
         id: step_one
         run: |
-          echo "action_state=yellow" >> $GITHUB_ENV
+            echo "action_state=yellow" | Out-File -FilePath $env:GITHUB_ENV -Append # no need for -Encoding utf8
       - name: Use the value
         id: step_two
         run: |
-          echo "${{ env.action_state }}" # This will output 'yellow'
-          echo "${{ env.VERSION1 }}" # VERSION1          
+            echo "${{ env.action_state }}" # This will output 'yellow'         
         
       - name: Set Variable
         run: echo "Hello World" >> $GITHUB_ENV
