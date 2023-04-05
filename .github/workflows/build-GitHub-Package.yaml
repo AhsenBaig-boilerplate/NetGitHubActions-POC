@@ -6,6 +6,18 @@ on:
     tags:
       - '*'
 
+  workflow_dispatch:
+    inputs:
+      build_deploy_choice:
+          description: 'Build, Deploy or Both'
+          required: true
+          default: 'build_deploy' 
+          type: choice
+          options:
+          - build_only
+          - deploy_only
+          - build_deploy
+
 jobs:
   build-and-publish:
     runs-on: windows-latest
