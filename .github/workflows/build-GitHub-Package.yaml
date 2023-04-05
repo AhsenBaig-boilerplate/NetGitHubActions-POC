@@ -23,66 +23,18 @@ jobs:
     runs-on: windows-latest
 
     env:
-      PROJECT_NAME: NetGitHubActions-POC      
-      #TAG_NAME: ${{ github.ref.split('/')[2] }}
+      PROJECT_NAME: NetGitHubActions-POC
 
+     if: ${{ github.ref_type == 'tag' }}
     steps:
-      - name: Set Version Variable
-        if: ${{ github.ref_type == 'tag' }}
-        env:
-            TAG: ${{ github.ref_name }}
-            TAG_VERSION: ${{ env.TAG_VERSION }}
+      - name: Transform Tag
         run: |
-            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_ENV
-            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_OUTPUT
-
-      - name: Set Version Variable2
-        if: ${{ github.ref_type == 'tag' }}
-        env:
-            TAG: ${{ github.ref_name }}
-            TAG_VERSION: ${{ env.TAG_VERSION }}
-            TAG_CHECK: ${{ env.TAG_CHECK }}
-        run: |
-            echo "${{ env.TAG }}"
-            echo "TAG_VERSION=${TAG#v}" | Out-File -FilePath $env:GITHUB_ENV -Append
-            echo "TAG_CHECK=${TAG#v}" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-      - name: Check Tag        
-        id: check-tag
-        if: ${{ github.event.ref }} =~ ^refs/tags/v[0-9]+\.[0-9]+\.[0-9]+$
-        run: |          
-              echo "match=true" >> $GITHUB_OUTPUT
-              echo "match=true" >> $GITHUB_ENV
-              
-      - name: Build
-        if: steps.check-tag.outputs.match == 'true'
-        run: |
-          echo "Tag is a match"
-      
-      - name: Set the value
-        id: step_one
-        run: |
-            echo "TAG_VERSION==${TAG#v}" | Out-File -FilePath $env:GITHUB_ENV -Append
-            echo "action_state=yellow" | Out-File -FilePath $env:GITHUB_ENV -Append # no need for -Encoding utf8
-      - name: Use the value
-        id: step_two
-        run: |
-            echo "${{ env.action_state }}" # This will output 'yellow'
-            echo "${{ env.TAG_VERSION }}"
-            echo "${{ env.TAG_CHECK }}"
-        
-      - name: Set Variable
-        run: echo "Hello World" >> $GITHUB_ENV
-        id: set-variable
-      
-      - name: Output Variable Value
-        run: |
-            echo "Variable Value: ${{ steps.set-variable.outputs.result }}"
-
-      - name: Create annotation for build error
-        run: echo "::error file=app.js,line=1::Missing semicolon"
-
-
+          $tag = $env:GITHUB_REF.Replace("refs/tags/", "")
+          # -replace '[^0-9\.]',''
+          $nuget_version = "v" + $tag -replace '[^\d\.a-zA-Z]',''
+          "NUGET_VERSION=$nuget_version" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - name: Print NuGet-Compatible Version
+        run: echo "NuGet-Compatible Version:${{ env.NUGET_VERSION }}"
 
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -114,19 +66,10 @@ jobs:
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
         env:
           BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
-          #NUGET_VERSION: ${{ github.ref.replace('refs/tags/', '') }}
-
-      #- name: Create NuGet package
-      #  run: nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}
-      #  env:
-      #      BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
-      #      NUGET_VERSION: ${{ github.ref }}
-
-      #- name: Copy NuGet package to release files
-      #  run: cp ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg ${{ github.workspace }}/releases/${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
 
       - name: Publish NuGet package
         if: github.event_name == 'release' && startsWith(github.ref, 'v')
         run: nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
             NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+
