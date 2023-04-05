@@ -62,7 +62,7 @@ jobs:
       - name: Create NuGet package
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}
-            $packagePath = Join-Path -Path $env:GITHUB_WORKSPACE -ChildPath "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" 
+            $packagePath = Join-Path -Path ${{ $env:GITHUB_WORKSPACE }} -ChildPath "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" 
             "PACKAGE_PATH=$packagePath" | Out-File -FilePath $env:GITHUB_ENV -Append
         env:
           BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
