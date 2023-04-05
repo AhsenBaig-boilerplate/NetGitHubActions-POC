@@ -56,7 +56,7 @@ jobs:
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
         env:
           BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
-          NUGET_VERSION: ${{ github.ref.replace('refs/tags/', '') }}
+          #NUGET_VERSION: ${{ github.ref.replace('refs/tags/', '') }}
 
       #- name: Create NuGet package
       #  run: nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}
