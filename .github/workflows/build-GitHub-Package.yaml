@@ -41,11 +41,14 @@ jobs:
       - name: Create NuGet package
         run: nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release
         env:
-          BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
-          NUGET_VERSION: ${{ github.ref }}
+            BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
+            NUGET_VERSION: ${{ github.ref }}
+
+      - name: Copy NuGet package to release files
+        run: cp ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg ${{ github.workspace }}/releases/${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
 
       - name: Publish NuGet package
         if: github.event_name == 'release' && startsWith(github.ref, 'v')
         run: nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
