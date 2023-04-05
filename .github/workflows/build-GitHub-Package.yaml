@@ -43,7 +43,7 @@ jobs:
             TAG_VERSION: ${{ env.TAG_VERSION }}
             TAG_CHECK: ${{ env.TAG_CHECK }}
         run: |
-            echo "${{ env.TAG }}
+            echo "${{ env.TAG }}"
             echo "TAG_VERSION=${TAG#v}" | Out-File -FilePath $env:GITHUB_ENV -Append
             echo "TAG_CHECK=${TAG#v}" | Out-File -FilePath $env:GITHUB_ENV -Append
 
