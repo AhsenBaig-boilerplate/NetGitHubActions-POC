@@ -21,9 +21,7 @@ jobs:
             TAG: ${{ github.ref_name }}
         run: |
             echo "VERSION1=${TAG#v}" >> $GITHUB_ENV
-            echo "VERSION1=${TAG#v}" >> $GITHUB_OUTPUT            
-            echo "VERSION3=${{ github.ref.split('/')[2] }}" >> $GITHUB_ENV
-            echo "VERSION3=${{ github.ref.split('/')[2] }}" >> $GITHUB_OUTPUT            
+            echo "VERSION1=${TAG#v}" >> $GITHUB_OUTPUT
 
       - name: Create annotation for build error
         run: echo "::error file=app.js,line=1::Missing semicolon"
