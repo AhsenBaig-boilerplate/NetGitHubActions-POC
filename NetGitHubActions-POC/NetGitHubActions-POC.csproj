@@ -13,7 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <RepositoryUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC</RepositoryUrl>
-    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PackageRepositoryUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC/packages</PackageRepositoryUrl>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
