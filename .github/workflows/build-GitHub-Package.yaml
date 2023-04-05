@@ -30,7 +30,7 @@ jobs:
       - name: Transform Tag
         run: |
           $tag = $env:GITHUB_REF.Replace("refs/tags/", "")
-          $nuget_version = "v" + $tag -replace '[^\d\.a-zA-Z]',''
+          $nuget_version = $tag -replace '^v(\d+\.\d+\.\d+)(-.+)?$', '$1$2'
           "NUGET_VERSION=$nuget_version" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Print NuGet-Compatible Version
         run: echo "NuGet-Compatible Version:${{ env.NUGET_VERSION }}"
