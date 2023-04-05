@@ -31,9 +31,19 @@ jobs:
         if: ${{ github.ref_type == 'tag' }}
         env:
             TAG: ${{ github.ref_name }}
+            TAG_VERSION: ${{ env.TAG_VERSION }}
         run: |
-            echo "VERSION1=${TAG#v}" >> $GITHUB_ENV
-            echo "VERSION1=${TAG#v}" >> $GITHUB_OUTPUT
+            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_ENV
+            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_OUTPUT
+
+      - name: Set Version Variable2
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+            TAG: ${{ github.ref_name }}
+            TAG_VERSION: ${{ env.TAG_VERSION }}
+        run: |
+            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_ENV
+            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_OUTPUT
 
       - name: Check Tag        
         id: check-tag
