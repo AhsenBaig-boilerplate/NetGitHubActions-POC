@@ -11,9 +11,25 @@ jobs:
     runs-on: windows-latest
 
     env:
-      PROJECT_NAME: NetGitHubActions-POC
+      PROJECT_NAME: NetGitHubActions-POC      
+      #TAG_NAME: ${{ github.ref.split('/')[2] }}
 
     steps:
+      - name: Set Version Variable
+        if: ${{ github.ref_type == 'tag' }}
+        env:
+            TAG: ${{ github.ref_name }}
+        run: |
+            echo "VERSION1=${TAG#v}" >> $GITHUB_ENV
+            echo "VERSION1=${TAG#v}" >> $GITHUB_OUTPUT
+            echo "VERSION2=${{ github.ref.replace('refs/tags/', '') }}" >> $GITHUB_ENV
+            echo "VERSION2=${{ github.ref.replace('refs/tags/', '') }}" >> $GITHUB_OUTPUT
+            echo "VERSION3=${{ github.ref.split('/')[2] }}" >> $GITHUB_ENV
+            echo "VERSION3=${{ github.ref.split('/')[2] }}" >> $GITHUB_OUTPUT            
+
+      - name: Create annotation for build error
+        run: echo "::error file=app.js,line=1::Missing semicolon"
+
       - name: Checkout repository
         uses: actions/checkout@v2
         

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NetGitHubActions_POC
 {
+    /// <summary>
+    /// GitHubActions Demo
+    /// </summary>
     public class DemoGitHubActions
     {
     }
