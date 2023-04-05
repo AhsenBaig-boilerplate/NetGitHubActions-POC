@@ -42,8 +42,8 @@ jobs:
             TAG: ${{ github.ref_name }}
             TAG_VERSION: ${{ env.TAG_VERSION }}
         run: |
-            echo ${{ github.ref_name }}
-            echo ${{ env.TAG_VERSION }}
+            echo ${{ github.ref_name }} | Out-File -FilePath $env:GITHUB_ENV -Append
+            echo ${{ env.TAG_VERSION }} | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Check Tag        
         id: check-tag
