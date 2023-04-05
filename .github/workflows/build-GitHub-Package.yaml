@@ -42,8 +42,8 @@ jobs:
             TAG: ${{ github.ref_name }}
             TAG_VERSION: ${{ env.TAG_VERSION }}
         run: |
-            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_ENV
-            echo "TAG_VERSION=${TAG#v}" >> $GITHUB_OUTPUT
+            echo ${{ github.ref_name }}
+            echo ${{ env.TAG_VERSION }}
 
       - name: Check Tag        
         id: check-tag
