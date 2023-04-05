@@ -2,11 +2,21 @@ name: Build AJAX Application - GitHub Package
 
 run-name: "Deploy to @${{ github.ref_name }} by @${{ github.actor }}"
 
-on:  
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+on:
+   workflow_dispatch:
+    inputs:
+      build_deploy_choice:
+          description: 'Build, Deploy or Both'
+          required: true
+          default: 'build_deploy' 
+          type: choice
+          options:
+          - build_only
+          - deploy_only
+          - build_deploy
+      environment:
+        type: environment
+        description: Select the environment
     paths:
       - 'Ajax/**/*'
       - '.github/workflows/main_build-ajax.yml'
