@@ -16,6 +16,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+        
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
 
       - name: Setup .NET Framework
         uses: actions/setup-dotnet@v1
@@ -29,7 +32,8 @@ jobs:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
       - name: Build the solution
-        run: msbuild ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj /p:Configuration=Release
+        run: |
+            msbuild ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj /p:Configuration=Release
         env:
           PROJECT_DIR: ${{ env.PROJECT_NAME }}
           BUILD_CONFIG: Release
