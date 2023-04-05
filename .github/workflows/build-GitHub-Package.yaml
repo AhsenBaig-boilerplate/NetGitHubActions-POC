@@ -39,13 +39,21 @@ jobs:
           BUILD_CONFIG: Release
 
       - name: Create NuGet package
-        run: nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}
+        run: |
+            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}
+            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
         env:
-            BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
-            NUGET_VERSION: ${{ github.ref }}
+          BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
+          NUGET_VERSION: ${{ github.ref | replace('refs/tags/', '') }}
 
-      - name: Copy NuGet package to release files
-        run: cp ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg ${{ github.workspace }}/releases/${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+      #- name: Create NuGet package
+      #  run: nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}
+      #  env:
+      #      BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
+      #      NUGET_VERSION: ${{ github.ref }}
+
+      #- name: Copy NuGet package to release files
+      #  run: cp ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg ${{ github.workspace }}/releases/${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
 
       - name: Publish NuGet package
         if: github.event_name == 'release' && startsWith(github.ref, 'v')
