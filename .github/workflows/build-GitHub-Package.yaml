@@ -60,6 +60,7 @@ jobs:
           BUILD_CONFIG: Release
 
       - name: Create NuGet package
+        id: create-nuget-package
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}            
         env:
@@ -67,12 +68,15 @@ jobs:
 
       - name: Upload NuGet package
         if: github.event_name == 'release'
+        id: upload-release-asset
         uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          upload_url: ${{ github.event.release.upload_url }}
           asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
           asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
-          release_id: ${{ github.event.release.id }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          asset_content_type: application/zip         
 
       - name: Publish NuGet package
         if: github.event_name == 'release'
