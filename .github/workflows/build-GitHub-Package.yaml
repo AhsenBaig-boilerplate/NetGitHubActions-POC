@@ -54,7 +54,7 @@ jobs:
 
       - name: Build the solution
         run: |
-            msbuild ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj /p:Configuration=Release
+            msbuild ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj /p:Configuration=Release /p:DebugSymbols=true
         env:
           PROJECT_DIR: ${{ env.PROJECT_NAME }}
           BUILD_CONFIG: Release
@@ -65,7 +65,7 @@ jobs:
       - name: Create NuGet package
         id: create-nuget-package
         run: |
-            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
+            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg -IncludeSymbols -IncludeSource
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg"
         env:
