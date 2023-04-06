@@ -66,7 +66,7 @@ jobs:
           BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
 
       - name: Upload NuGet package
-        if: github.event_name == 'release' && startsWith(github.ref, 'v')
+        if: github.event_name == 'release'
         uses: actions/upload-release-asset@v1
         with:
           asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
@@ -75,7 +75,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish NuGet package
-        if: github.event_name == 'release' && startsWith(github.ref, 'v')
+        if: github.event_name == 'release'
         run: nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
             NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
