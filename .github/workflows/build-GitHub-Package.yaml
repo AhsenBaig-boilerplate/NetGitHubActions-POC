@@ -71,9 +71,7 @@ jobs:
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg"
         env:
-          BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
-          NUGET_USER: ${{ github.actor }}
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release          
 
       - name: Upload NuGet package
         # if: github.event_name == 'release'
@@ -89,6 +87,8 @@ jobs:
 
       - name: Publish NuGet package
         if: github.event_name == 'release'
-        run: nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+        run: |          
+          nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
-            NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+           NUGET_USER: ${{ github.actor }}
+           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
