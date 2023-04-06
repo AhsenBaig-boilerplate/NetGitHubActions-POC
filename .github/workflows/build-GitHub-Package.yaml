@@ -72,6 +72,8 @@ jobs:
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg"
         env:
           BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
+          NUGET_USER: ${{ github.actor }}
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
 
       - name: Upload NuGet package
         # if: github.event_name == 'release'
