@@ -59,6 +59,9 @@ jobs:
           PROJECT_DIR: ${{ env.PROJECT_NAME }}
           BUILD_CONFIG: Release
 
+      - name: Create releases directory
+        run: mkdir releases
+        
       - name: Create NuGet package
         id: create-nuget-package
         run: |
