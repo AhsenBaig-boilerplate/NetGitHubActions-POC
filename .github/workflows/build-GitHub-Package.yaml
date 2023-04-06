@@ -62,20 +62,22 @@ jobs:
       - name: Create NuGet package
         id: create-nuget-package
         run: |
-            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }}            
+            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
+            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
+            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg"
         env:
           BUILD_ARTIFACTS: ${{ env.PROJECT_NAME }}/bin/Release
 
       - name: Upload NuGet package
-        if: github.event_name == 'release'
+        # if: github.event_name == 'release'
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
-          asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
+          asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
           asset_content_type: application/zip         
 
       - name: Publish NuGet package
