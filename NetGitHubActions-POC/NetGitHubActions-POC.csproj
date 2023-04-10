@@ -12,8 +12,13 @@
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <RepositoryUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC</RepositoryUrl>
-    <PackageRepositoryUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC/packages</PackageRepositoryUrl>
+    <PackageRepositoryUrl>https://github.com/orgs/AhsenBaig-boilerplate/packages</PackageRepositoryUrl>    
+    <PackageProjectUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC.git</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
