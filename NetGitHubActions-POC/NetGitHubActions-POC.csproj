@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <RepositoryType>git</RepositoryType>
     <PackageRepositoryUrl>https://github.com/orgs/AhsenBaig-boilerplate/packages</PackageRepositoryUrl>    
     <PackageProjectUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AhsenBaig-boilerplate/NetGitHubActions-POC.git</RepositoryUrl>
