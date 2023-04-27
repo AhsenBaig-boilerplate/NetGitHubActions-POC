@@ -102,7 +102,7 @@ jobs:
         if: github.event_name == 'release'
         run: |
           # nuget SetApiKey ${{ secrets.NUGET_API_KEY }}
-          nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+          nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
         env:
            NUGET_USER: ${{ github.actor }}
            NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }} # ${{ secrets.NUGET_API_KEY }}
