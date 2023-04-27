@@ -105,4 +105,4 @@ jobs:
           nuget push ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
         env:
            NUGET_USER: ${{ github.actor }}
-           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+           NUGET_API_KEY: ${{ secrets.GITHUB_TOKEN }} # ${{ secrets.NUGET_API_KEY }}
