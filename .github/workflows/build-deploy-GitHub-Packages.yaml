@@ -36,7 +36,7 @@ jobs:
         run: echo "NuGet-Compatible Version:${{ env.NUGET_VERSION }}"
 
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@main
         
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
