@@ -70,18 +70,18 @@ jobs:
         id: create-nuget-package
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
-            # Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
-            # Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg"
-            # Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.nupkg"
-            # Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.snupkg"
+            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
+            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg"
+            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.nupkg"
+            Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.snupkg"
 
-      - name: Copy NuGet packages
-        id: copy-nuget-package
-        run: |
-            Get-ChildItem -Path "${{ env.PROJECT_RELEASES }}" -Include *.nupkg,*.snupkg -Recurse | ForEach-Object { 
-                Copy-Item -Path $_.FullName -Destination ${{ env:PROJECT_RELEASES}}
-                Copy-Item -Path $_.FullName -Destination ${{ env:NuGetDirectory }}
-            }
+      # - name: Copy NuGet packages
+      #   id: copy-nuget-package
+      #   run: |
+      #       Get-ChildItem -Path "${{ env.PROJECT_RELEASES }}" -Include *.nupkg,*.snupkg -Recurse | ForEach-Object { 
+      #           Copy-Item -Path $_.FullName -Destination ${{ env:PROJECT_RELEASES}}
+      #           Copy-Item -Path $_.FullName -Destination ${{ env:NuGetDirectory }}
+      #       }
 
       - name: List out PROJECT_RELEASES packages
         id: project-list-packages
