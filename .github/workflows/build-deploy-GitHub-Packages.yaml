@@ -25,8 +25,8 @@ jobs:
 
     env:
       PROJECT_NAME: NetGitHubActions-POC
-      PROJECT_RELEASES: ${{ env:GITHUB_WORKSPACE }}/releases
-      NuGetDirectory: ${{ env:GITHUB_WORKSPACE }}/nuget
+      PROJECT_RELEASES: ${{ github.GITHUB_WORKSPACE }}/releases
+      NuGetDirectory: ${{ github.GITHUB_WORKSPACE }}/nuget
 
     if: ${{ github.ref_type == 'tag' }}
     steps:
