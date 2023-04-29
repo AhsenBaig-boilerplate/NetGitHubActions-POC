@@ -75,6 +75,10 @@ jobs:
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.nupkg"
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:PROJECT_RELEASES)/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.snupkg"
 
+            Get-ChildItem -Path $($env:PROJECT_RELEASES) -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+              ls -Path $_.FullName
+            }
+
       # - name: Copy NuGet packages
       #   id: copy-nuget-package
       #   run: |
@@ -83,18 +87,18 @@ jobs:
       #           Copy-Item -Path $_.FullName -Destination ${{ env:NuGetDirectory }}
       #       }
 
-      - name: List out PROJECT_RELEASES packages
-        id: project-list-packages
-        run: |
-            Get-ChildItem -Path "${{ env:PROJECT_RELEASES }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
-              ls -Path $_.FullName
-            }
-      - name: List out NuGetDirectory packages
-        id: nuget-list-packages
-        run: |
-            Get-ChildItem -Path $($env:NuGetDirectory) -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
-              ls -Path $_.FullName
-            }
+      # - name: List out PROJECT_RELEASES packages
+      #   id: project-list-packages
+      #   run: |
+      #       Get-ChildItem -Path "${{ env:PROJECT_RELEASES }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+      #         ls -Path $_.FullName
+      #       }
+      # - name: List out NuGetDirectory packages
+      #   id: nuget-list-packages
+      #   run: |
+      #       Get-ChildItem -Path $($env:NuGetDirectory) -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+      #         ls -Path $_.FullName
+      #       }
   #     - name: Upload Release NuGet package
   #       # if: github.event_name == 'release'
   #       id: upload-release-asset
