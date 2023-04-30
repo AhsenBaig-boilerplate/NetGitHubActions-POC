@@ -111,7 +111,7 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           path: |
-              ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
+              ${{ github.GITHUB_WORKSPACE}}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
               ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
         env:
             GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
