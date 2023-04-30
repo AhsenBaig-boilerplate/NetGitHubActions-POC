@@ -64,7 +64,9 @@ jobs:
           BUILD_CONFIG: Release
 
       - name: Create releases directory
-        run: mkdir releases
+        run: |
+          mkdir releases
+          mkdir nuget
         
       - name: Create NuGet package
         id: create-nuget-package
@@ -89,14 +91,14 @@ jobs:
       - name: List out PROJECT_RELEASES packages
         id: project-list-packages
         run: |
-            Get-ChildItem -Path "${{ env:PROJECT_RELEASES }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+            Get-ChildItem -Path "$($env:GITHUB_WORKSPACE)/releases" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
             }
       - name: List out NuGetDirectory packages
         if: always()
         id: nuget-list-packages
         run: |
-            Get-ChildItem -Path $($env:NuGetDirectory) -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+            Get-ChildItem -Path "$($env:GITHUB_WORKSPACE)/nuget" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
             }
   #     - name: Upload Release NuGet package
