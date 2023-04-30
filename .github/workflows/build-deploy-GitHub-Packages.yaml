@@ -79,12 +79,12 @@ jobs:
             #   ls -Path $_.FullName
             # }
 
-      - name: Copy NuGet packages
-        id: copy-nuget-package
-        run: |
-            Get-ChildItem -Path "${{ env.PROJECT_RELEASES }}" -Include *.nupkg,*.snupkg -Recurse | ForEach-Object { 
-                Copy-Item -Path $_.FullName -Destination ${{ env:NuGetDirectory}}
-            }
+      # - name: Copy NuGet packages
+      #   id: copy-nuget-package
+      #   run: |
+      #       Get-ChildItem -Path "${{ env.PROJECT_RELEASES }}" -Include *.nupkg,*.snupkg -Recurse | ForEach-Object { 
+      #           Copy-Item -Path $_.FullName -Destination "${{ env.NuGetDirectory }}"
+      #       }
 
       - name: List out PROJECT_RELEASES packages
         id: project-list-packages
@@ -93,6 +93,7 @@ jobs:
               ls -Path $_.FullName
             }
       - name: List out NuGetDirectory packages
+        if: always()
         id: nuget-list-packages
         run: |
             Get-ChildItem -Path $($env:NuGetDirectory) -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
