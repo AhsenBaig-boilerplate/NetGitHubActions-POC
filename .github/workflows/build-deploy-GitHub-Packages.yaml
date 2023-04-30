@@ -72,7 +72,7 @@ jobs:
         id: create-nuget-package
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
-            # -OutputDirectory "${{ github.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
+            # -OutputDirectory "${{ f.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
 
       - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
         id: copy-items-nuget-directory
@@ -85,7 +85,7 @@ jobs:
       - name: List out GITHUB_WORKSPACE packages list packages
         id: github-workspace-nuget-packages-list
         run: |
-            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
+            echo "github.GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }} "
 
             Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
@@ -103,8 +103,8 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           path: |
-            ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
-            ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
+            ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
+            ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
 
       - name: Upload Release NuGet package
         # if: github.event_name == 'release'
