@@ -71,7 +71,7 @@ jobs:
       - name: Create NuGet package
         id: create-nuget-package
         run: |
-            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -o ${{ env.PROJECT_RELEASES }} -Symbols -SymbolPackageFormat snupkg
+            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -OutputDirectory ${{ env.PROJECT_RELEASES }} -Symbols -SymbolPackageFormat snupkg
             # Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg"
             # Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg"
             # Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.nupkg"
