@@ -85,13 +85,13 @@ jobs:
       - name: List out GITHUB_WORKSPACE packages list packages
         id: github-workspace-nuget-packages-list
         run: |
-            echo "env.GITHUB_WORKSPACE"
+            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
 
             Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
             }
-
-            echo ${{ env.PROJECT_NUGET_PACKAGES }}
+            
+            echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
             Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object { 
               Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
             }
@@ -103,8 +103,8 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           path: |
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
+            ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
+            ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
 
       - name: Upload Release NuGet package
         # if: github.event_name == 'release'
