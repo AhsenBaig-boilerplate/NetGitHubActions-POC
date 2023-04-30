@@ -76,12 +76,8 @@ jobs:
       - name: List out NUGET_PACKAGES packages
         id: nuget-packages-list
         run: |
-            echo "env: NUGET_PACKAGES"
-            Get-ChildItem -Path "${{ env:NUGET_PACKAGES }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
-              ls -Path $_.FullName
-            }
-
             echo "env.NUGET_PACKAGES"
+            
             Get-ChildItem -Path "${{ env.NUGET_PACKAGES }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
             }
