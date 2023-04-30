@@ -93,7 +93,7 @@ jobs:
             
             echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
             Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object { 
-              Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
+              ls -Path $_.FullName
             }
 
       # Publish the NuGet package as an artifact, so they can be used in the following jobs
