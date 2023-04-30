@@ -113,6 +113,9 @@ jobs:
           path: |
             ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
             ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
+        env:
+            GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+            PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
 
       - name: Upload Release NuGet package
         # if: github.event_name == 'release'
