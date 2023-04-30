@@ -97,7 +97,7 @@ jobs:
             }
             
             echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
-            Get-ChildItem -Path "${{ env.PROJECT_NUGET_PACKAGES }}" | ForEach-Object { 
+            Get-ChildItem -Path "${{ env.PROJECT_NUGET_PACKAGES }}" -Recurse | ForEach-Object { 
               ls -Path $_.FullName
             }
         env:
@@ -113,7 +113,7 @@ jobs:
           path: |
             ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
             ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
-            
+
       - name: Upload Release NuGet package
         # if: github.event_name == 'release'
         id: upload-release-asset
