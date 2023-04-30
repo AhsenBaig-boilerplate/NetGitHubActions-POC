@@ -78,8 +78,7 @@ jobs:
       - name: Copy project Nuget packages to PROJECT_NUGET_PACKAGES
         id: copy-project-items-nuget-directory
         run: |
-          # Get-ChildItem -Exclude folder1,folder2
-          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg -Exclude packages -Recurse | ForEach-Object {
+          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
               # Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
           }          
@@ -104,9 +103,7 @@ jobs:
         if: always()
         id: copy-github-workspace-items-nuget-directory2
         run: |
-          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg -Recurse -Directory | 
-          Where-Object { $_.PsIsContainer -and $_.FullName -notmatch 'packages' } | 
-          ForEach-Object {
+          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg -Recurse | Where-Object { $_.PsIsContainer -and $_.FullName -notmatch 'packages' } | ForEach-Object {
               ls -Path $_.FullName
               # Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
           }
