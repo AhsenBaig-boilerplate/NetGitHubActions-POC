@@ -27,6 +27,7 @@ jobs:
       PROJECT_NAME: NetGitHubActions-POC
       PROJECT_RELEASES: ${{ github.GITHUB_WORKSPACE }}/releases
       PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
+      HEADER_TEXT: "##############################################"
 
     if: ${{ github.ref_type == 'tag' }}
     steps:
@@ -73,98 +74,112 @@ jobs:
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
             # -OutputDirectory "${{ env.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
-            echo "Paths - SRC: ${{ env.GITHUB_WORKSPACE }} - DEST: ${{ env.PROJECT_NUGET_PACKAGES }}"
 
-            Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
-              ls -Path $_.FullName
-              Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
-            }
-
-      # - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
-      #   id: copy-items-nuget-directory
-      #   run: |
-      #     echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}"
-      #     Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
-      #         ls -Path $_.FullName
-      #         Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
-      #     }
-      #   env:
-      #     GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
-      #     PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
-
-      - name: List out GITHUB_WORKSPACE packages list packages
-        id: github-workspace-nuget-packages-list
+      - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
+        id: copy-items-nuget-directory
         run: |
-            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
+          echo ${{ env.HEADER_TEXT }}
+          echo "Variables: "
+          echo "env.PROJECT_NAME: ${{ env.PROJECT_NAME }}"
+          echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }}"
+          echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}"                  
+          echo ${{ env.HEADER_TEXT }}
+          
+          echo ${{ env.HEADER_TEXT }}
+          echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}"
+          echo ${{ env.HEADER_TEXT }}
+          
+          Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
+              ls -Path $_.FullName
+              # Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
+          }
 
-            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+          echo ${{ env.HEADER_TEXT }}
+          echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.GITHUB_WORKSPACE }}"
+          echo ${{ env.HEADER_TEXT }}
+          
+          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg | ForEach-Object {
               ls -Path $_.FullName
-            }
-            
-            echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
-            Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object { 
-              ls -Path $_.FullName
-            }
+              # Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
+          }
+
         env:
           GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
           PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
-          
-      # Publish the NuGet package as an artifact, so they can be used in the following jobs
-      - uses: actions/upload-artifact@v3
-        with:
-          name: nuget
-          if-no-files-found: error
-          retention-days: 7
-          path: |
+
+  #     - name: List out GITHUB_WORKSPACE packages list packages
+  #       id: github-workspace-nuget-packages-list
+  #       run: |
+  #           echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
+
+  #           Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+  #             ls -Path $_.FullName
+  #           }
             
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
-            # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
-            # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
+  #           echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
+  #           Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object { 
+  #             ls -Path $_.FullName
+  #           }
+  #       env:
+  #         GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+  #         PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
+          
+  #     # Publish the NuGet package as an artifact, so they can be used in the following jobs
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: nuget
+  #         if-no-files-found: error
+  #         retention-days: 7
+  #         path: |
+            
+  #           ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
+  #           ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
+  #           # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
+  #           # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
 
-      - name: Upload Release NuGet package
-        # if: github.event_name == 'release'
-        id: upload-release-asset
-        uses: actions/upload-release-asset@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
-          asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
-          asset_content_type: application/zip
+  #     - name: Upload Release NuGet package
+  #       # if: github.event_name == 'release'
+  #       id: upload-release-asset
+  #       uses: actions/upload-release-asset@main
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ github.event.release.upload_url }}
+  #         asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+  #         asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+  #         asset_content_type: application/zip
 
-      - name: Upload Debug NuGet package
-        # if: github.event_name == 'release'
-        id: upload-debug-asset
-        uses: actions/upload-release-asset@main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
-          asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
-          asset_content_type: application/zip
+  #     - name: Upload Debug NuGet package
+  #       # if: github.event_name == 'release'
+  #       id: upload-debug-asset
+  #       uses: actions/upload-release-asset@main
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       with:
+  #         upload_url: ${{ github.event.release.upload_url }}
+  #         asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
+  #         asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
+  #         asset_content_type: application/zip
 
-  push_nuget:
-    runs-on: ubuntu-latest
-    needs: [ build-and-publish ]
-    steps:
-       # Download the NuGet package created in the previous job
-      - uses: actions/download-artifact@v3
-        with:
-          name: nuget
-          path: ${{ env.PROJECT_NUGET_PACKAGES }}
+  # push_nuget:
+  #   runs-on: ubuntu-latest
+  #   needs: [ build-and-publish ]
+  #   steps:
+  #      # Download the NuGet package created in the previous job
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: nuget
+  #         path: ${{ env.PROJECT_NUGET_PACKAGES }}
       
-      # Install the .NET SDK indicated in the global.json file
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+  #     # Install the .NET SDK indicated in the global.json file
+  #     - name: Setup .NET Core
+  #       uses: actions/setup-dotnet@v3
 
-      # Publish all NuGet packages to NuGet.org
-      # Use --skip-duplicate to prevent errors if a package with the same version already exists.
-      # If you retry a failed workflow, already published packages will be skipped without error.
-      - name: Publish NuGet package
-        run: |
-          foreach($file in (Get-ChildItem "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg)) {
-              dotnet nuget push $file --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
-          }
+  #     # Publish all NuGet packages to NuGet.org
+  #     # Use --skip-duplicate to prevent errors if a package with the same version already exists.
+  #     # If you retry a failed workflow, already published packages will be skipped without error.
+  #     - name: Publish NuGet package
+  #       run: |
+  #         foreach($file in (Get-ChildItem "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg)) {
+  #             dotnet nuget push $file --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
+  #         }
