@@ -104,42 +104,39 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
           PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
           
-  #     # Publish the NuGet package as an artifact, so they can be used in the following jobs
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: nuget
-  #         if-no-files-found: error
-  #         retention-days: 7
-  #         path: |
+      # Publish the NuGet package as an artifact, so they can be used in the following jobs
+      - uses: actions/upload-artifact@v3
+        with:
+          name: nuget
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
+            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
             
-  #           ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
-  #           ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
-  #           # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
-  #           # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
+      - name: Upload Release NuGet package
+        # if: github.event_name == 'release'
+        id: upload-release-asset
+        uses: actions/upload-release-asset@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+          asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+          asset_content_type: application/zip
 
-  #     - name: Upload Release NuGet package
-  #       # if: github.event_name == 'release'
-  #       id: upload-release-asset
-  #       uses: actions/upload-release-asset@main
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         upload_url: ${{ github.event.release.upload_url }}
-  #         asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
-  #         asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
-  #         asset_content_type: application/zip
-
-  #     - name: Upload Debug NuGet package
-  #       # if: github.event_name == 'release'
-  #       id: upload-debug-asset
-  #       uses: actions/upload-release-asset@main
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         upload_url: ${{ github.event.release.upload_url }}
-  #         asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
-  #         asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
-  #         asset_content_type: application/zip
+      - name: Upload Debug NuGet package
+        # if: github.event_name == 'release'
+        id: upload-debug-asset
+        uses: actions/upload-release-asset@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
+          asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
+          asset_content_type: application/zip
 
   # push_nuget:
   #   runs-on: ubuntu-latest
