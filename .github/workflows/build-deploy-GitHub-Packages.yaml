@@ -76,29 +76,21 @@ jobs:
             # -OutputDirectory "${{ env.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
 
       - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
-        id: copy-items-nuget-directory
+        id: copy-project-items-nuget-directory
         run: |
-          echo ${{ env.HEADER_TEXT }}
-          echo "Variables: "
-          echo "env.PROJECT_NAME: ${{ env.PROJECT_NAME }}"
-          echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }}"
-          echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}"                  
-          echo ${{ env.HEADER_TEXT }}
-          
-          echo ${{ env.HEADER_TEXT }}
-          echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}"
-          echo ${{ env.HEADER_TEXT }}
-          
-          Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
+          # Get-ChildItem -Exclude folder1,folder2
+          Get-ChildItem -Exclude packages | Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
               ls -Path $_.FullName
               # Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
-          }
+          }          
+        env:
+          GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+          PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
 
-          echo ${{ env.HEADER_TEXT }}
-          echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.GITHUB_WORKSPACE }}"
-          echo ${{ env.HEADER_TEXT }}
-          
-          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg | ForEach-Object {
+      - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
+        id: copy-github-workspace-items-nuget-directory
+        run: |
+          Get-ChildItem -Exclude packages | Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg | ForEach-Object {
               ls -Path $_.FullName
               # Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
           }
