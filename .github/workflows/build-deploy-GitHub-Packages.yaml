@@ -74,6 +74,17 @@ jobs:
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
             # -OutputDirectory "${{ env.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
 
+echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ wnv.GITHUB_WORKSPACE }}"
+
+Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
+
+ls -Path $_.FullName
+
+Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
+
+}
+
+
       # - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
       #   id: copy-items-nuget-directory
       #   run: |
