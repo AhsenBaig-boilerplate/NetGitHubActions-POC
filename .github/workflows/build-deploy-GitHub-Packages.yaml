@@ -111,8 +111,8 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           path: |
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
+              ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
+              ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
         env:
             GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
             PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
