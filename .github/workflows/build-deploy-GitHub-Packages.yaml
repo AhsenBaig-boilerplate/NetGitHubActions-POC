@@ -72,20 +72,20 @@ jobs:
         id: create-nuget-package
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
-            # -OutputDirectory "${{ env.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
+            # -OutputDirectory "${{ f.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
 
       - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
         id: copy-items-nuget-directory
         run: |
           echo ${{ env.PROJECT_NUGET_PACKAGES }}
-          Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object { 
+          Get-ChildItem -Path "${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object { 
               Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
           }
 
       - name: List out GITHUB_WORKSPACE packages list packages
         id: github-workspace-nuget-packages-list
         run: |
-            echo "github.GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }} "
+            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
 
             Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
@@ -103,8 +103,11 @@ jobs:
           if-no-files-found: error
           retention-days: 7
           path: |
-            ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
-            ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
+            
+            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
+            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
+            # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
+            # ${{ github.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
 
       - name: Upload Release NuGet package
         # if: github.event_name == 'release'
@@ -138,7 +141,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: nuget
-          path: ${{ env.NuGetDirectory }}
+          path: ${{ env.PROJECT_NUGET_PACKAGES }}
       
       # Install the .NET SDK indicated in the global.json file
       - name: Setup .NET Core
