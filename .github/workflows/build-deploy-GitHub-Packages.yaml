@@ -75,7 +75,7 @@ jobs:
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).nupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.nupkg"
             Copy-Item -Path "$($env:PROJECT_NAME).$($env:NUGET_VERSION).snupkg" -Destination "$($env:GITHUB_WORKSPACE)/releases/$($env:PROJECT_NAME).$($env:NUGET_VERSION).symbols.snupkg"
 
-            Get-ChildItem -Path $($env:GITHUB_WORKSPACE) -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+            Get-ChildItem -Path "$($env:GITHUB_WORKSPACE)" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
             }
 
