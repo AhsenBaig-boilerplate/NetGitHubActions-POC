@@ -74,17 +74,17 @@ jobs:
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
             # -OutputDirectory "${{ env.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
 
-      - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
-        id: copy-items-nuget-directory
-        run: |
-          echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}"
-          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
-              ls -Path $_.FullName
-              Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
-          }
-        env:
-          GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
-          PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
+      # - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
+      #   id: copy-items-nuget-directory
+      #   run: |
+      #     echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}"
+      #     Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
+      #         ls -Path $_.FullName
+      #         Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
+      #     }
+      #   env:
+      #     GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+      #     PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
 
       - name: List out GITHUB_WORKSPACE packages list packages
         id: github-workspace-nuget-packages-list
