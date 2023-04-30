@@ -63,6 +63,15 @@ jobs:
           PROJECT_DIR: ${{ env.PROJECT_NAME }}
           BUILD_CONFIG: Release
 
+      - name: List out build NUGET_PACKAGES packages
+        id: build-nuget-packages-list
+        run: |
+            echo "env.NUGET_PACKAGES"
+
+            Get-ChildItem -Path "${{ env.PROJECT_NAME }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+              ls -Path $_.FullName
+            }
+
       - name: Create releases directory
         run: |
           mkdir releases
@@ -77,7 +86,7 @@ jobs:
         id: nuget-packages-list
         run: |
             echo "env.NUGET_PACKAGES"
-            
+
             Get-ChildItem -Path "${{ env.NUGET_PACKAGES }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
             }
@@ -110,7 +119,7 @@ jobs:
   #       id: copy-items-nuget-directory
   #       run: |
   #         # Put to ${{ github.workspace}}/nuget
-  #         Get-ChildItem -Path "$($env:GITHUB_WORKSPACE)/releases" -Include *.nupkg,*.snupkg -Recurse | ForEach-Object { 
+  #         Get-ChildItem -Path "$($env.GITHUB_WORKSPACE)/releases" -Include *.nupkg,*.snupkg -Recurse | ForEach-Object { 
   #             Copy-Item -Path $_.FullName -Destination ${{ env.NuGetDirectory}}
   #         }
   #     # Publish the NuGet package as an artifact, so they can be used in the following jobs
