@@ -91,11 +91,13 @@ jobs:
       - name: List out PROJECT_RELEASES packages
         id: project-list-packages
         run: |
-            echo "GITHUB_WORKSPACE: $($env:GITHUB_WORKSPACE)"
+            echo "env GITHUB_WORKSPACE: $($env:GITHUB_WORKSPACE)"
+            echo "GitHub ${{ github.GITHUB_WORKSPACE }}"
             echo "PROJECT_RELEASES: $($env:PROJECT_RELEASES)"
             echo "NuGetDirectory: $($env:NuGetDirectory)"
 
-            ls  *.nupkg -Path "$($env:GITHUB_WORKSPACE)" -Recurse
+            ls *.nupkg -Path "$($env:GITHUB_WORKSPACE)" -Recurse
+            ls *.nupkg -Path "${{ github.GITHUB_WORKSPACE }}/nuget" -Recurse
 
             Get-ChildItem -Path "$($env:GITHUB_WORKSPACE)" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
               ls -Path $_.FullName
