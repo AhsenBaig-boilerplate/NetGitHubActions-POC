@@ -87,22 +87,22 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
           PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
 
-  #     - name: List out GITHUB_WORKSPACE packages list packages
-  #       id: github-workspace-nuget-packages-list
-  #       run: |
-  #           echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
+      - name: List out GITHUB_WORKSPACE packages list packages
+        id: github-workspace-nuget-packages-list
+        run: |
+            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
 
-  #           Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
-  #             ls -Path $_.FullName
-  #           }
+            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+              ls -Path $_.FullName
+            }
             
-  #           echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
-  #           Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object { 
-  #             ls -Path $_.FullName
-  #           }
-  #       env:
-  #         GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
-  #         PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
+            echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
+            Get-ChildItem -Path "${{ env.PROJECT_NUGET_PACKAGES }}" | ForEach-Object { 
+              ls -Path $_.FullName
+            }
+        env:
+          GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+          PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
           
   #     # Publish the NuGet package as an artifact, so they can be used in the following jobs
   #     - uses: actions/upload-artifact@v3
