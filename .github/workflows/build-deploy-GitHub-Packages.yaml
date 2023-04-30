@@ -77,8 +77,8 @@ jobs:
       - name: Copy Nuget packages to PROJECT_NUGET_PACKAGES
         id: copy-items-nuget-directory
         run: |
-          echo ${{ env.PROJECT_NUGET_PACKAGES }}
-          Get-ChildItem -Path "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
+          echo "Paths - DEST: ${{ env.PROJECT_NUGET_PACKAGES }} - SRC: ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}
+          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg | ForEach-Object {
               ls -Path $_.FullName
               Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
           }
