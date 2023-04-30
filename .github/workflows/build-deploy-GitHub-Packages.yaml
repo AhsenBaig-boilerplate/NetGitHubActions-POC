@@ -82,6 +82,9 @@ jobs:
               ls -Path $_.FullName
               Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }}
           }
+        env:
+          GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+          PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
 
       - name: List out GITHUB_WORKSPACE packages list packages
         id: github-workspace-nuget-packages-list
