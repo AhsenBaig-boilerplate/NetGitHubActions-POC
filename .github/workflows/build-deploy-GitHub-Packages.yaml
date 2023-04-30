@@ -80,7 +80,8 @@ jobs:
       - name: Create NuGet package
         id: create-nuget-package
         run: |
-            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -OutputDirectory "${{ github.GITHUB_WORKSPACE }}/nuget" -Symbols -SymbolPackageFormat snupkg
+            nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
+            # -OutputDirectory "${{ github.GITHUB_WORKSPACE }}/nuget"
   
       - name: List GITHUB_WORKSPACE files
         id: github-workspace-files-list
