@@ -161,14 +161,11 @@ jobs:
       # If you retry a failed workflow, already published packages will be skipped without error.
       - name: Publish NuGet package  
         run: |
-          echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
-
-          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
-              ls -Path $_.FullName
-              dotnet nuget push $_.File --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
-          }
+          echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}"
           
           foreach($file in (Get-ChildItem "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg -Recurse)) {
+              Write-Output "========================================"
               Write-Output "dotnet nuget push ${file} --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate"
+              Write-Output "========================================"
               dotnet nuget push $file --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
           }
