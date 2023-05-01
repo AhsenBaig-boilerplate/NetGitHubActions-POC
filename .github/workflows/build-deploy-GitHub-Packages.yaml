@@ -142,25 +142,30 @@ jobs:
           asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
           asset_content_type: application/zip
 
-  # push_nuget:
-  #   runs-on: ubuntu-latest
-  #   needs: [ build-and-publish ]
-  #   steps:
-  #      # Download the NuGet package created in the previous job
-  #     - uses: actions/download-artifact@v3
-  #       with:
-  #         name: nuget
-  #         path: ${{ env.PROJECT_NUGET_PACKAGES }}
+  push_nuget:
+    runs-on: ubuntu-latest
+    needs: [ build-and-publish ]
+    steps:
+       # Download the NuGet package created in the previous job
+      - uses: actions/download-artifact@v3
+        with:
+          name: nuget
+          path: ${{ env.PROJECT_NUGET_PACKAGES }}
       
-  #     # Install the .NET SDK indicated in the global.json file
-  #     - name: Setup .NET Core
-  #       uses: actions/setup-dotnet@v3
+      # Install the .NET SDK indicated in the global.json file
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
 
-  #     # Publish all NuGet packages to NuGet.org
-  #     # Use --skip-duplicate to prevent errors if a package with the same version already exists.
-  #     # If you retry a failed workflow, already published packages will be skipped without error.
-  #     - name: Publish NuGet package
-  #       run: |
-  #         foreach($file in (Get-ChildItem "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg)) {
-  #             dotnet nuget push $file --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
-  #         }
+      # Publish all NuGet packages to NuGet.org
+      # Use --skip-duplicate to prevent errors if a package with the same version already exists.
+      # If you retry a failed workflow, already published packages will be skipped without error.
+      - name: Publish NuGet package
+        run: |
+          echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
+
+          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
+            ls -Path $_.FullName
+          }
+          # foreach($file in (Get-ChildItem "${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}" -Include *.nupkg,*.snupkg)) {
+          #     dotnet nuget push $file --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
+          # }
