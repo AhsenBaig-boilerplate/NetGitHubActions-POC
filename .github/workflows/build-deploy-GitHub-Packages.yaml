@@ -64,8 +64,8 @@ jobs:
 
       - name: Create releases directory
         run: |
-          mkdir releases
-          mkdir nuget
+          mkdir ${{ env.GITHUB_WORKSPACE }}/releases
+          mkdir ${{ env.GITHUB_WORKSPACE }}/nuget
       
       - name: Cache NuGet packages
         id: cache-nuget-packages
@@ -83,7 +83,7 @@ jobs:
       - name: Copy workspace Nuget packages to PROJECT_NUGET_PACKAGES 
         id: copy-github-workspace-items-nuget-directory
         run: |
-            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
+            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}"
 
             Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
               ls -Path $_.FullName
