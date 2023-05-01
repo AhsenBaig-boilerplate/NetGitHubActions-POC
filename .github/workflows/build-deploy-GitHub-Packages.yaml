@@ -149,7 +149,7 @@ jobs:
        # Download the NuGet package created in the previous job
       - uses: actions/download-artifact@v3
         with:
-          name: nuget
+          name: nuget-packages
           path:  ${{ env.PROJECT_NUGET_PACKAGES }}
       
       # Install the .NET SDK indicated in the global.json file
