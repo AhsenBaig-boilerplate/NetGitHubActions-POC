@@ -118,12 +118,15 @@ jobs:
             ${{ github.GITHUB_WORKSPACE }}/nuget/*.snupkg
             ${{ env.GITHUB_WORKSPACE }}/*.nupkg
             ${{ env.GITHUB_WORKSPACE }}/*.snupkg
+            ${{ env.GITHUB_WORKSPACE }}/nuget/*.nupkg
+            ${{ env.GITHUB_WORKSPACE }}/nuget/*.snupkg
             ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/*.nupkg
             ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/*.snupkg
             ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
             ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
-           
-            
+        env:
+            GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+            PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
 
       # Publish the NuGet package as an artifact, so they can be used in the following jobs
       - uses: actions/upload-artifact@v3
