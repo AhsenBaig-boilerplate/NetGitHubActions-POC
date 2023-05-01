@@ -163,10 +163,12 @@ jobs:
         run: |
           echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
 
-          # Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
-          #   ls -Path $_.FullName
-          # }
+          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
+              ls -Path $_.FullName
+              dotnet nuget push $_.File --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
+          }
           
-          foreach($file in (Get-ChildItem "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg)) {
+          foreach($file in (Get-ChildItem "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg -Recurse)) {
+              Write-Output "dotnet nuget push ${file} --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate"
               dotnet nuget push $file --api-key "${{ secrets.GITHUB_TOKEN }}" --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --skip-duplicate
           }
