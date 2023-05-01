@@ -143,7 +143,7 @@ jobs:
           asset_content_type: application/zip
 
   push_nuget:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: [ build-and-publish ]
     steps:
        # Download the NuGet package created in the previous job
@@ -159,8 +159,7 @@ jobs:
       # Publish all NuGet packages to NuGet.org
       # Use --skip-duplicate to prevent errors if a package with the same version already exists.
       # If you retry a failed workflow, already published packages will be skipped without error.
-      - name: Publish NuGet package
-        shell: pwsh
+      - name: Publish NuGet package  
         run: |
           echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
 
