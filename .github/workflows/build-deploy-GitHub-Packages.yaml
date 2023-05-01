@@ -107,31 +107,16 @@ jobs:
           GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
           PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
       
+      # Publish the NuGet package as an artifact, so they can be used in the following jobs
       - name: Upload NuGet package artifact
         uses: actions/upload-artifact@v3
         with:
           name: nuget-packages
           if-no-files-found: error
-          path: |            
-            ${{ env.GITHUB_WORKSPACE }}/nuget/*.nupkg
-            ${{ env.GITHUB_WORKSPACE }}/nuget/*.snupkg
-
-      # Publish the NuGet package as an artifact, so they can be used in the following jobs
-      - uses: actions/upload-artifact@v3
-        with:
-          name: nuget
-          if-no-files-found: error
-          retention-days: 7
+          # retention-days: 7
           path: |
-              ${{ github.GITHUB_WORKSPACE}}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
-              ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
-              ${{ env.PROJECT_NAME }}/*.nupkg
-              ${{ env.PROJECT_NAME }}/*.snupkg
-              ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
-              ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
-        env:
-            GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
-            PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
+            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
+            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
 
       - name: Upload Release NuGet package
         # if: github.event_name == 'release'
@@ -141,7 +126,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
+          asset_path: ${{ env.PROJECT_NUGET_PACKAGES }}
           asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.nupkg
           asset_content_type: application/zip
 
@@ -153,7 +138,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
+          asset_path: ${{ env.PROJECT_NUGET_PACKAGES }}
           asset_name: ${{ env.PROJECT_NAME }}.${{ env.NUGET_VERSION }}.snupkg
           asset_content_type: application/zip
 
