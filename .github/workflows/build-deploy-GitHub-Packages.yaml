@@ -27,7 +27,8 @@ jobs:
       PROJECT_NAME: NetGitHubActions-POC
       PROJECT_RELEASES: ${{ github.GITHUB_WORKSPACE }}/releases
       PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
-      HEADER_TEXT: "##############################################"
+      GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
+      ENV_GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}
 
     if: ${{ github.ref_type == 'tag' }}
     steps:
@@ -116,8 +117,14 @@ jobs:
             ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
             ${{ github.GITHUB_WORKSPACE }}/nuget/*.nupkg
             ${{ github.GITHUB_WORKSPACE }}/nuget/*.snupkg
-            D:\a\NetGitHubActions-POC\NetGitHubActions-POC\*.nupkg
-            D:\a\NetGitHubActions-POC\NetGitHubActions-POC\*.snupkg
+            ${{ env.GITHUB_WORKSPACE }}/*.nupkg
+            ${{ env.GITHUB_WORKSPACE }}/*.snupkg
+            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/*.nupkg
+            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/*.snupkg
+            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
+            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
+           
+            
 
       # Publish the NuGet package as an artifact, so they can be used in the following jobs
       - uses: actions/upload-artifact@v3
