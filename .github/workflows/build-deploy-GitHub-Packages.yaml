@@ -80,39 +80,19 @@ jobs:
         run: |
             nuget pack ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}.csproj -Prop Configuration=Release -Version ${{ env.NUGET_VERSION }} -Symbols -SymbolPackageFormat snupkg
             # -OutputDirectory "${{ env.GITHUB_WORKSPACE }}/nuget" # If OutputDirectory is defined then it gets all the referenced external .nupkg as well.
-      - name: List out GITHUB_WORKSPACE packages list packages
-        id: github-workspace-nuget-packages-list-o
+      - name: Copy workspace Nuget packages to PROJECT_NUGET_PACKAGES 
+        id: copy-github-workspace-items-nuget-directory
         run: |
             echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
 
-            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
               ls -Path $_.FullName
               Copy-Item -Path $_.FullName -Destination "${{ env.PROJECT_NUGET_PACKAGES }}" -Verbose –PassThru | ForEach-Object { Write-Host $_.FullName }
-            }
-            
-            echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
-            Get-ChildItem -Path "${{ env.PROJECT_NUGET_PACKAGES }}" -Recurse | ForEach-Object { 
-              ls -Path $_.FullName
-              Copy-Item -Path $_.FullName -Destination "${{ env.PROJECT_NUGET_PACKAGES }}" -Verbose –PassThru | ForEach-Object { Write-Host $_.FullName }
-            }
+            }                       
         env:
           GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
           PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
           
-      - name: Copy workspace Nuget packages to PROJECT_NUGET_PACKAGES        
-        id: copy-github-workspace-items-nuget-directory
-        env:
-          GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
-          PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
-        run: |                              
-          Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg -Recurse |  Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {              
-              Copy-Item -Path $_.FullName -Destination "${{ env.PROJECT_NUGET_PACKAGES }}" -Verbose –PassThru | ForEach-Object { Write-Host $_.FullName }
-          }
-          
-          Get-ChildItem -Path "${{ env.PROJECT_NUGET_PACKAGES }}" -Include *.nupkg,*.snupkg -Recurse |  Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {              
-              Copy-Item -Path $_.FullName -Destination "${{ env.PROJECT_NUGET_PACKAGES }}" -Verbose –PassThru | ForEach-Object { Write-Host $_.FullName }
-          }
-
       - name: List out GITHUB_WORKSPACE packages list packages
         id: github-workspace-nuget-packages-list
         run: |
