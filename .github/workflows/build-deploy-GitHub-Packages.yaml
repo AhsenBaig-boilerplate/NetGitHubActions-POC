@@ -146,13 +146,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ build-and-publish ]
     steps:
-       # Download the NuGet package created in the previous job
-      - uses: actions/download-artifact@v3
-        with:
-          name: nuget-packages
-          path: |
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
+      #  # Download the NuGet package created in the previous job
+      # - uses: actions/download-artifact@v3
+      #   with:
+      #     name: nuget-packages
+      #     path: |
+      #       ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
+      #       ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
       
       # Install the .NET SDK indicated in the global.json file
       - name: Setup .NET Core
