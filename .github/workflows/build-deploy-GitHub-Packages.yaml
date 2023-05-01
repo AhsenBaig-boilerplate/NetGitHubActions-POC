@@ -98,12 +98,12 @@ jobs:
         run: |
             echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }} "
 
-            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | ForEach-Object {
+            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
               ls -Path $_.FullName
             }
             
             echo "env.PROJECT_NUGET_PACKAGES: ${{ env.PROJECT_NUGET_PACKAGES }} "
-            Get-ChildItem -Path "${{ env.PROJECT_NUGET_PACKAGES }}" -Recurse | ForEach-Object { 
+            Get-ChildItem -Path "${{ env.PROJECT_NUGET_PACKAGES }}" -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object { 
               ls -Path $_.FullName
             }
         env:
