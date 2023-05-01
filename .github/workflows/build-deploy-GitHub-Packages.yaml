@@ -77,7 +77,7 @@ jobs:
         id: copy-github-workspace-items-nuget-directory
         run: |
           Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg,*.snupkg -Recurse |  Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {              
-              Copy-Item -Path $_.FullName -Destination ${{ env.PROJECT_NUGET_PACKAGES }} –PassThru | ForEach-Object { Write-Host $_.FullName }
+              Copy-Item -Path $_.FullName -Destination "${{ env.GITHUB_WORKSPACE }}/nuget" –PassThru | ForEach-Object { Write-Host $_.FullName }
           }
 
         env:
