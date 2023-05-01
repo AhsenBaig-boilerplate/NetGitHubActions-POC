@@ -62,18 +62,18 @@ jobs:
           PROJECT_DIR: ${{ env.PROJECT_NAME }}
           BUILD_CONFIG: Release
 
-      - name: Create releases directory
+      - name: Create releases and nuget directory
         run: |
           mkdir ${{ env.GITHUB_WORKSPACE }}/releases
           mkdir ${{ env.GITHUB_WORKSPACE }}/nuget
       
-      - name: Cache NuGet packages
-        id: cache-nuget-packages
-        uses: actions/cache@main
-        with:
-          path: '**/packages.lock.json'
-          key: nuget-packages-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: nuget-packages-
+      # - name: Cache NuGet packages
+      #   id: cache-nuget-packages
+      #   uses: actions/cache@main
+      #   with:
+      #     path: '**/packages.lock.json'
+      #     key: nuget-packages-${{ hashFiles('**/packages.lock.json') }}
+      #     restore-keys: nuget-packages-
         
       - name: Create NuGet package
         id: create-nuget-package
@@ -83,10 +83,7 @@ jobs:
       - name: Copy workspace Nuget packages to PROJECT_NUGET_PACKAGES 
         id: copy-github-workspace-items-nuget-directory
         run: |
-            echo "env.GITHUB_WORKSPACE: ${{ env.GITHUB_WORKSPACE }}"
-
-            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {
-              ls -Path $_.FullName
+            Get-ChildItem -Path "${{ env.GITHUB_WORKSPACE }}" -Include *.nupkg, *.snupkg -Recurse | Where-Object { $_.FullName -notmatch 'packages' } | ForEach-Object {              
               Copy-Item -Path $_.FullName -Destination "${{ env.PROJECT_NUGET_PACKAGES }}" -Verbose –PassThru | ForEach-Object { Write-Host $_.FullName }
             }                       
         env:
@@ -116,25 +113,8 @@ jobs:
           name: nuget-packages
           if-no-files-found: error
           path: |            
-            ${{ env.PROJECT_NAME }}/*.nupkg
-            ${{ env.PROJECT_NAME }}/*.snupkg
-            ${{ github.GITHUB_WORKSPACE}}/${{ env.PROJECT_NAME }}/*.nupkg
-            ${{ github.GITHUB_WORKSPACE}}/${{ env.PROJECT_NAME }}/*.snupkg
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
-            ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
-            ${{ github.GITHUB_WORKSPACE }}/nuget/*.nupkg
-            ${{ github.GITHUB_WORKSPACE }}/nuget/*.snupkg
-            ${{ env.GITHUB_WORKSPACE }}/*.nupkg
-            ${{ env.GITHUB_WORKSPACE }}/*.snupkg
             ${{ env.GITHUB_WORKSPACE }}/nuget/*.nupkg
             ${{ env.GITHUB_WORKSPACE }}/nuget/*.snupkg
-            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/*.nupkg
-            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/*.snupkg
-            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
-            ${{ env.GITHUB_WORKSPACE }}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
-        env:
-            GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
-            PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
 
       # Publish the NuGet package as an artifact, so they can be used in the following jobs
       - uses: actions/upload-artifact@v3
