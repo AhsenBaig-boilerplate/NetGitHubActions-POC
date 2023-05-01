@@ -111,6 +111,10 @@ jobs:
           path: |
               ${{ github.GITHUB_WORKSPACE}}/${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.nupkg
               ${{ env.PROJECT_NAME }}/${{ env.PROJECT_NAME }}/*.snupkg
+              ${{ env.PROJECT_NAME }}/*.nupkg
+              ${{ env.PROJECT_NAME }}/*.snupkg
+              ${{ env.PROJECT_NUGET_PACKAGES }}/*.nupkg
+              ${{ env.PROJECT_NUGET_PACKAGES }}/*.snupkg
         env:
             GITHUB_WORKSPACE: ${{ github.GITHUB_WORKSPACE }}
             PROJECT_NUGET_PACKAGES: ${{ github.GITHUB_WORKSPACE }}/nuget
