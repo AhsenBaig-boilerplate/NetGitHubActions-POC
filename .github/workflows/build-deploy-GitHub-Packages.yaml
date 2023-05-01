@@ -31,6 +31,7 @@ jobs:
 
     if: ${{ github.ref_type == 'tag' }}
     steps:
+      - uses: actions/checkout@main # This action checks-out your repository under $GITHUB_WORKSPACE 
       - name: Transform Tag
         run: |
           $tag = $env:GITHUB_REF.Replace("refs/tags/", "")
@@ -38,9 +39,6 @@ jobs:
           "NUGET_VERSION=$nuget_version" | Out-File -FilePath $env:GITHUB_ENV -Append
       - name: Print NuGet-Compatible Version
         run: echo "NuGet-Compatible Version:${{ env.NUGET_VERSION }}"
-
-      - name: Checkout repository
-        uses: actions/checkout@main
         
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v1
